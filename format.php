@@ -176,7 +176,8 @@ class qformat_wordtable extends qformat_xml {
                     $zefilesize = zip_entry_filesize($zipentry);
 
                     // Look for internal images.
-                    if (strpos($zefilename, "media")) {
+					// Gabrio fix per evitare emf
+                    if (strpos($zefilename, "media") && substr($zefilename, -3) != 'emf') {
                         $imagedata = zip_entry_read($zipentry, $zefilesize);
                         $imagename = basename($zefilename);
                         $imagesuffix = strtolower(substr(strrchr($zefilename, "."), 1));
@@ -312,7 +313,7 @@ class qformat_wordtable extends qformat_xml {
      * @return string file extension
      */
     public function export_file_extension() {
-        return ".doc";
+        return ".html"; // Gabrio
     }
 
 
@@ -402,6 +403,9 @@ class qformat_wordtable extends qformat_xml {
             throw new moodle_exception(get_string('transformationfailed', 'qformat_wordtable', $stylesheet));
         }
         $this->debug_unlink($tempxhtmlfilename);
+
+		// Gabrio Fix svg images
+        $xsltoutput = str_replace('data:image/svg;base64', 'data:image/svg+xml;base64', $xsltoutput);
 
         // Strip out any redundant namespace attributes, which XSLT on Windows seems to add.
         $xsltoutput = str_replace(' xmlns=""', '', $xsltoutput);

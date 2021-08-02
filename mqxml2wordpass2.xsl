@@ -324,7 +324,9 @@
     <xsl:when test="contains(@src, $pluginfiles_string) or contains(@src, $embeddedimagedata_string)">
         <!-- Generated from Moodle 2.x, so images are handled neatly, using a reference to the data -->
         <!-- If imported from Word2MQXML, images are base64-encoded into the @src attribute -->
-        <a name="{$bookmark_name}" style="color:red;">x</a>
+        <xsl:variable name="image_data" select="ancestor::htm:td//htm:div[@class = 'ImageFile']/htm:img/@src"/><!-- Gabrio -->
+        <img src="{$image_data}"/><!-- Gabrio -->
+		<!--<a name="{$bookmark_name}" style="color:red;">x</a>-->
     </xsl:when>
     <xsl:otherwise>
         <img>
